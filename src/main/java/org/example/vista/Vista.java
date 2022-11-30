@@ -8,6 +8,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JList;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
@@ -15,7 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
-public class Vista extends JFrame {
+public class Vista extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
 	private JTabbedPane tabbedPane;
@@ -138,6 +141,7 @@ public class Vista extends JFrame {
 		
 		this.btnAgregarSocio = new JButton("Guardar");
 		this.panelFormularioNuevoSocio.add(this.btnAgregarSocio);
+		this.btnAgregarSocio.addActionListener(this);
 		
 		this.panelActividades = new JPanel();
 		this.tabbedPane.addTab("Actividades", null, this.panelActividades, null);
@@ -193,6 +197,25 @@ public class Vista extends JFrame {
 		
 		this.btnPagarCuotas = new JButton("Pagar");
 		this.panel_3.add(this.btnPagarCuotas);
+		this.btnPagarCuotas.addActionListener(this);
+		this.btnPagarCuotas.setActionCommand("Pagar");
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand().equals("Pagar")) {
+			System.out.println("Apreto pagar");
+		}else if(e.getActionCommand().equals("Agregar")) {
+			String nombre = this.textFieldNombre.getText();
+			String email = this.textFieldEmail.getText();
+			String fecha_nacimiento = this.textFieldFechaNacimiento.getText();
+			String nroCelular = this.textFieldNroCelular.getText();
+			String categoria = (String) this.comboBoxCategoria.getSelectedItem();
+			//Insert into socios values (nombre, email, fecha_nacimiento, nroCelular, categoria)
+			//Como no tenemos los ids en la vista deberiamos agregar que casi todos los ids sean autoincrement
+			System.out.println("Apreto agregar un socio");
+		}
+		
 	}
 
 }
