@@ -5,11 +5,19 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
+
 import javax.swing.JList;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -35,24 +43,14 @@ public class Vista extends JFrame implements ActionListener {
 	private JLabel lblNewLabel_3;
 	private JTextField textFieldEmail;
 	private JLabel lblNewLabel_4;
-	private JComboBox comboBoxCategoria;
+	private JComboBox<String> comboBoxCategoria;
 	private JButton btnAgregarSocio;
-	private JPanel panelActividades;
-	private JPanel panel_4;
-	private JList listaActividades;
-	private JPanel panel_5;
-	private JPanel panel_6;
-	private JList listaSociosCompatibles;
-	private JComboBox comboBoxCronogramas;
-	private JPanel panel;
-	private JPanel panel_1;
-	private JList listaTitulares;
-	private JPanel panel_2;
-	private JList listaCuotasDebidas;
-	private JPanel panel_3;
+	SQLServerDataSource ds = new SQLServerDataSource();
+	Connection con;
 	private JLabel lblNewLabel_5;
+	private JTextField textFieldTelGrupoFamiliar;
 	private JLabel lblNewLabel_6;
-	private JButton btnPagarCuotas;
+	private JTextField textFieldDomicilio;
 
 	/**
 	 * Launch the application.
@@ -63,6 +61,7 @@ public class Vista extends JFrame implements ActionListener {
 				try {
 					Vista frame = new Vista();
 					frame.setVisible(true);
+		        	
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -74,6 +73,20 @@ public class Vista extends JFrame implements ActionListener {
 	 * Create the frame.
 	 */
 	public Vista() {
+
+    	this.ds.setServerName("DESKTOP-ON7JO5N");  
+    	//ds.setPortNumber(1433);
+    	this.ds.setDatabaseName("Club");  
+    	this.ds.setUser("sa");
+    	this.ds.setPassword("123456");
+    	this.ds.setTrustServerCertificate(true);
+    	
+		try {
+			this.con = ds.getConnection();
+		} catch (SQLServerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		this.contentPane = new JPanel();
@@ -136,69 +149,31 @@ public class Vista extends JFrame implements ActionListener {
 		this.lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
 		this.panelFormularioNuevoSocio.add(this.lblNewLabel_4);
 		
-		this.comboBoxCategoria = new JComboBox();
+		this.comboBoxCategoria = new JComboBox<String>();
+		this.comboBoxCategoria.addItem("Menor");
+		this.comboBoxCategoria.addItem("Mayor");
+		this.comboBoxCategoria.addItem("Vitalicio");
 		this.panelFormularioNuevoSocio.add(this.comboBoxCategoria);
 		
-		this.btnAgregarSocio = new JButton("Guardar");
+		this.lblNewLabel_5 = new JLabel("Telefono grupo familiar");
+		this.lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
+		this.panelFormularioNuevoSocio.add(this.lblNewLabel_5);
+		
+		this.textFieldTelGrupoFamiliar = new JTextField();
+		this.panelFormularioNuevoSocio.add(this.textFieldTelGrupoFamiliar);
+		this.textFieldTelGrupoFamiliar.setColumns(10);
+		
+		this.lblNewLabel_6 = new JLabel("Domicilio");
+		this.lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
+		this.panelFormularioNuevoSocio.add(this.lblNewLabel_6);
+		
+		this.textFieldDomicilio = new JTextField();
+		this.panelFormularioNuevoSocio.add(this.textFieldDomicilio);
+		this.textFieldDomicilio.setColumns(10);
+		
+		this.btnAgregarSocio = new JButton("Agregar");
 		this.panelFormularioNuevoSocio.add(this.btnAgregarSocio);
 		this.btnAgregarSocio.addActionListener(this);
-		
-		this.panelActividades = new JPanel();
-		this.tabbedPane.addTab("Actividades", null, this.panelActividades, null);
-		this.panelActividades.setLayout(new BorderLayout(0, 0));
-		
-		this.panel_4 = new JPanel();
-		this.panelActividades.add(this.panel_4, BorderLayout.WEST);
-		this.panel_4.setLayout(new BorderLayout(0, 0));
-		
-		this.listaActividades = new JList();
-		this.panel_4.add(this.listaActividades, BorderLayout.CENTER);
-		
-		this.comboBoxCronogramas = new JComboBox();
-		this.panel_4.add(this.comboBoxCronogramas, BorderLayout.NORTH);
-		
-		this.panel_5 = new JPanel();
-		this.panelActividades.add(this.panel_5, BorderLayout.CENTER);
-		this.panel_5.setLayout(new BorderLayout(0, 0));
-		
-		this.listaSociosCompatibles = new JList();
-		this.panel_5.add(this.listaSociosCompatibles);
-		
-		this.panel_6 = new JPanel();
-		this.panelActividades.add(this.panel_6, BorderLayout.EAST);
-		
-		this.panel = new JPanel();
-		this.tabbedPane.addTab("Facturacion", null, this.panel, null);
-		this.panel.setLayout(new BorderLayout(0, 0));
-		
-		this.panel_1 = new JPanel();
-		this.panel.add(this.panel_1, BorderLayout.WEST);
-		this.panel_1.setLayout(new BorderLayout(0, 0));
-		
-		this.listaTitulares = new JList();
-		this.panel_1.add(this.listaTitulares, BorderLayout.CENTER);
-		
-		this.panel_2 = new JPanel();
-		this.panel.add(this.panel_2, BorderLayout.CENTER);
-		this.panel_2.setLayout(new BorderLayout(0, 0));
-		
-		this.listaCuotasDebidas = new JList();
-		this.panel_2.add(this.listaCuotasDebidas, BorderLayout.CENTER);
-		
-		this.panel_3 = new JPanel();
-		this.panel_2.add(this.panel_3, BorderLayout.SOUTH);
-		this.panel_3.setLayout(new GridLayout(0, 3, 0, 0));
-		
-		this.lblNewLabel_5 = new JLabel("Monto debido");
-		this.panel_3.add(this.lblNewLabel_5);
-		
-		this.lblNewLabel_6 = new JLabel("$ lo que sea");
-		this.panel_3.add(this.lblNewLabel_6);
-		
-		this.btnPagarCuotas = new JButton("Pagar");
-		this.panel_3.add(this.btnPagarCuotas);
-		this.btnPagarCuotas.addActionListener(this);
-		this.btnPagarCuotas.setActionCommand("Pagar");
 	}
 
 	@Override
@@ -206,14 +181,48 @@ public class Vista extends JFrame implements ActionListener {
 		if(e.getActionCommand().equals("Pagar")) {
 			System.out.println("Apreto pagar");
 		}else if(e.getActionCommand().equals("Agregar")) {
-			String nombre = this.textFieldNombre.getText();
-			String email = this.textFieldEmail.getText();
-			String fecha_nacimiento = this.textFieldFechaNacimiento.getText();
-			String nroCelular = this.textFieldNroCelular.getText();
-			String categoria = (String) this.comboBoxCategoria.getSelectedItem();
-			//Insert into socios values (nombre, email, fecha_nacimiento, nroCelular, categoria)
-			//Como no tenemos los ids en la vista deberiamos agregar que casi todos los ids sean autoincrement
-			System.out.println("Apreto agregar un socio");
+			try {
+				String nombre = this.textFieldNombre.getText();
+				String email = this.textFieldEmail.getText();
+				String fecha_nacimiento = this.textFieldFechaNacimiento.getText();
+				String nroCelular = this.textFieldNroCelular.getText();
+				String categoriaString = (String) this.comboBoxCategoria.getSelectedItem();
+				String telGrupo = this.textFieldTelGrupoFamiliar.getText();
+				String domicilio = this.textFieldDomicilio.getText();
+				
+				int categoria;
+				
+				if(categoriaString.equalsIgnoreCase("menor")){
+					categoria = 4;
+					System.out.println("Vamos bien");
+				}else if(categoriaString.equalsIgnoreCase("mayor")) {
+					categoria = 5;
+				}else
+					categoria = 6;
+				
+				//Statement sql = this.con.createStatement();
+				
+				//sql.executeUpdate("exec SP_INSERTAR_SOCIO '"+ nombre +"', '"+ email +"', '"+ fecha_nacimiento +"', '"+ nroCelular +"', "+ categoria +", '"+ domicilio +"', '"+ telGrupo +"'");
+	        	
+				PreparedStatement sql = con.prepareStatement("{call dbo.SP_INSERTAR_SOCIO(?, ?, ?, ?, ?, ?, ?)}");
+				
+				sql.setString(1, nombre);
+				sql.setString(2, email);
+				sql.setString(3, fecha_nacimiento);
+				sql.setString(4, nroCelular);
+				sql.setInt(5, categoria);
+				sql.setString(6, domicilio);
+				sql.setString(7, telGrupo);
+				
+				int cant = sql.executeUpdate();
+				
+				sql.close();
+				System.out.println(cant);
+				
+			} catch (SQLException e1) {
+				System.out.println("Fallo");
+				e1.printStackTrace();
+			}
 		}
 		
 	}
